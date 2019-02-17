@@ -32,14 +32,6 @@ def getPos3(data):
 	list1.append(strData)
 	rospy.loginfo(strData)
 
-def getPos1(data):
-	global strData2
-	strData2=data.data
-	global list2
-	list2.append(strData2)
-	rospy.loginfo("Got Location from Robot1")
-	rospy.loginfo(strData2)
-
 def getStatus(data):
     global status
     status = int(data.data)
@@ -53,7 +45,6 @@ rospy.Subscriber("/robot2/odom", Odometry, newOdom)
 pub = rospy.Publisher("/robot2/cmd_vel", Twist, queue_size = 1)
 pubPos = rospy.Publisher('Robot2', String, queue_size=10)
 pubStat = rospy.Publisher('Robot2Status', String, queue_size=10)
-rospy.Subscriber("Robot1",String, getPos1)
 rospy.Subscriber("Robot3", String, getPos3)
 rospy.Subscriber("controller", String, getStatus)
 
@@ -91,23 +82,12 @@ while 1:
         y3=float(b)
     else:
         break
-    s1= len(list2)
-    if i1<= s1-1:
-        localstr1 = list2[i1]
-        a1,b1 = localstr1.split("@")
-        global x1
-        global y1
-        x1=float(a1)
-        y1=float(b1)
-    else:
-        break
-    rospy.loginfo(x1)
-    rospy.loginfo(y1)
+    rospy.loginfo("Points of Robot 3")
     rospy.loginfo(x3)
     rospy.loginfo(y3)
     rospy.loginfo("Goal Position:")
-    goal1.x = 0.2*x1 + 0.4*x + 0.2*x3
-    goal1.y = 0.2*y1 + 0.4*y + 0.2*y3
+    goal1.x = 0.7*x+0.3*x3
+    goal1.y = 0.7*y+0.3*y3
     rospy.loginfo(goal1.x)
     rospy.loginfo(goal1.y)
     inc_x = goal1.x-x

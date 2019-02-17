@@ -23,14 +23,6 @@ def newOdom(msg):
     rot_q = msg.pose.pose.orientation
     (roll, pitch, theta) = euler_from_quaternion([rot_q.x, rot_q.y, rot_q.z, rot_q.w])
 
-def getPos2(data):
-	global strData
-	strData=data.data
-	global list1
-	rospy.loginfo("Got Location from Robot3")
-	list1.append(strData)
-	rospy.loginfo(strData)
-
 def getPos1(data):
 	global strData2
 	strData2=data.data
@@ -53,7 +45,6 @@ pub = rospy.Publisher("/robot3/cmd_vel", Twist, queue_size = 1)
 pubPos = rospy.Publisher('Robot3', String, queue_size=10)
 pubStat = rospy.Publisher('Robot3Status', String, queue_size=10)
 rospy.Subscriber("Robot1",String, getPos1)
-rospy.Subscriber("Robot2", String, getPos2)
 rospy.Subscriber("controller", String, getStatus)
 
 speed = Twist()
@@ -80,16 +71,6 @@ global i1
 i1=0
 goal1 = Point()
 while 1:
-    s= len(list1)
-    if i1<= s-1:
-        localstr = list1[i1]
-        a,b = localstr.split("@")
-        global x2
-        global y2
-        x2=float(a)
-        y2=float(b)
-    else:
-        break
     s1= len(list2)
     if i1<= s1-1:
         localstr1 = list2[i1]
@@ -100,13 +81,12 @@ while 1:
         y1=float(b1)
     else:
         break
+    rospy.loginfo("Points of Robot 1")
     rospy.loginfo(x1)
     rospy.loginfo(y1)
-    rospy.loginfo(x2)
-    rospy.loginfo(y2)
     rospy.loginfo("Goal Position:")
-    goal1.x = 0.2*x1 + 0.2*x2 + 0.4*x
-    goal1.y = 0.2*y1 + 0.2*y2 + 0.4*y
+    goal1.x = 0.6*x1+0.4*x
+    goal1.y = 0.6*y1+0.4*y
     rospy.loginfo(goal1.x)
     rospy.loginfo(goal1.y)
     inc_x = goal1.x-x
