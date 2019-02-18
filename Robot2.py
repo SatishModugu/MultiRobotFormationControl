@@ -121,6 +121,10 @@ while 1:
     rospy.loginfo("Waiting for Status:")
     while  status < 3 :
         pub.publish(speed)
+        r.sleep()
+    if status==4:
+        break
+        rospy.loginfo("Stoping the movement")
     rospy.loginfo("Got Next iteration points")
     status=0
 	
